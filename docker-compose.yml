@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  postgis:
+    image: postgis/postgis:16-3.4
+    container_name: narita-parking-db
+    environment:
+      POSTGRES_DB: parking
+      POSTGRES_USER: parking
+      POSTGRES_PASSWORD: parking_pass
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/01_init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U parking -d parking"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:
